@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Item Tracking</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Item Tracking</h1>
+      <div id="items">
+        <!-- Items will be displayed here -->
+      </div>
+      <h2 class="expired-items-header">Expired Items</h2>
+      <div id="expired-items">
+        <!-- Expired items will be displayed here -->
+      </div>
+    </div>
+    <script>
+      // Make a GET request to the '/' URL to retrieve all the items
+      fetch('/')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (items) {
+          // Iterate over the items array and create a div element for each item
+          items.forEach(function (item) {
+            var itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
+            if (item.notificationDate < new Date().toISOString().slice(0, 10)) {
+              itemDiv.classList.add('expired');
+            }
+            itemDiv.innerHTML = '<div class="serial-number">' + item.serialNumber + '</div>' +
+              '<div class="ticket-number">' + item.ticketNumber + '</div>' +
+              '<div class="notification-date">' + item.notificationDate + '</div>';
+            document.getElementById('items').appendChild(itemDiv);
+          });
+        });
+
+      // Make a GET request to the '/items' URL to retrieve only the expired items
+      fetch('/items')
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (items) {
+          // Iterate over the items array and create a div element for each item
+          items.forEach(function (item) {
+            var itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
+            itemDiv.classList.add('expired');
+            itemDiv.innerHTML = '<div class="serial-number">'
+            + item.ticketNumber + '</div>' +
+            '<div class="notification-date">' + item.notificationDate + '</div>';
+          document.getElementById('expired-items').appendChild(itemDiv);
+        });
+      });
+    </script>
+  </body>
+</html>
